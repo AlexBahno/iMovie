@@ -45,7 +45,7 @@ struct MovieDetailListView: View {
                     Text("·")
                     Text(movie.yearText)
                     Text(movie.durationText)
-                }
+                }.lineLimit(1)
                 
                 Text(movie.overview)
                 HStack {
@@ -102,7 +102,7 @@ struct MovieDetailListView: View {
                 if movie.youtubeTrailers != nil && movie.youtubeTrailers!.count > 0 {
                     Text("Trailers").font(.headline)
                     
-                    ForEach(movie.youtubeTrailers!.reversed()) { trailer in
+                    ForEach(movie.youtubeTrailers!.reversed().prefix(5)) { trailer in
                         Button {
                             self.selectedTrailer = trailer
                         } label: {

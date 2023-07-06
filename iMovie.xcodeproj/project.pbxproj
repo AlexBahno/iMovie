@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		D3001FDD2A54BC41007B8E69 /* SafariView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3001FDC2A54BC41007B8E69 /* SafariView.swift */; };
+		D3062FBA2A55792C0051AEC1 /* MovieSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3062FB92A55792C0051AEC1 /* MovieSearchView.swift */; };
+		D3062FBC2A55796C0051AEC1 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3062FBB2A55796C0051AEC1 /* SearchBar.swift */; };
+		D3062FBE2A55F58C0051AEC1 /* MovieSearchState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3062FBD2A55F58C0051AEC1 /* MovieSearchState.swift */; };
+		D3062FC02A56C9620051AEC1 /* MovieSearchCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3062FBF2A56C9620051AEC1 /* MovieSearchCard.swift */; };
 		D36845712A4F105A0073582A /* iMovieApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D36845702A4F105A0073582A /* iMovieApp.swift */; };
 		D36845732A4F105A0073582A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D36845722A4F105A0073582A /* ContentView.swift */; };
 		D36845752A4F105B0073582A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D36845742A4F105B0073582A /* Assets.xcassets */; };
@@ -36,6 +40,10 @@
 
 /* Begin PBXFileReference section */
 		D3001FDC2A54BC41007B8E69 /* SafariView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariView.swift; sourceTree = "<group>"; };
+		D3062FB92A55792C0051AEC1 /* MovieSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieSearchView.swift; sourceTree = "<group>"; };
+		D3062FBB2A55796C0051AEC1 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
+		D3062FBD2A55F58C0051AEC1 /* MovieSearchState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieSearchState.swift; sourceTree = "<group>"; };
+		D3062FBF2A56C9620051AEC1 /* MovieSearchCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieSearchCard.swift; sourceTree = "<group>"; };
 		D368456D2A4F105A0073582A /* iMovie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iMovie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D36845702A4F105A0073582A /* iMovieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iMovieApp.swift; sourceTree = "<group>"; };
 		D36845722A4F105A0073582A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -127,6 +135,8 @@
 				D380C7DC2A518A9600DA8C4B /* MovieListView.swift */,
 				D380C7E32A518DFD00DA8C4B /* LoadingView.swift */,
 				D380C7E72A51AF8200DA8C4B /* MovieDetailView.swift */,
+				D3062FB92A55792C0051AEC1 /* MovieSearchView.swift */,
+				D3062FBF2A56C9620051AEC1 /* MovieSearchCard.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -145,6 +155,7 @@
 			children = (
 				D380C7E12A518D5E00DA8C4B /* ActivityIndicatorView.swift */,
 				D3001FDC2A54BC41007B8E69 /* SafariView.swift */,
+				D3062FBB2A55796C0051AEC1 /* SearchBar.swift */,
 			);
 			path = UIKitViews;
 			sourceTree = "<group>";
@@ -174,6 +185,7 @@
 				D3C5D8282A501B5B00B34D4A /* ImageLoader.swift */,
 				D380C7DE2A518AAE00DA8C4B /* MovieListState.swift */,
 				D380C7E92A51AFB200DA8C4B /* MovieDetailState.swift */,
+				D3062FBD2A55F58C0051AEC1 /* MovieSearchState.swift */,
 			);
 			path = Bindings;
 			sourceTree = "<group>";
@@ -251,6 +263,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D3062FC02A56C9620051AEC1 /* MovieSearchCard.swift in Sources */,
 				D380C7D72A50A92E00DA8C4B /* MovieBackdropCarouselView.swift in Sources */,
 				D380C7EA2A51AFB200DA8C4B /* MovieDetailState.swift in Sources */,
 				D380C7DD2A518A9600DA8C4B /* MovieListView.swift in Sources */,
@@ -260,12 +273,15 @@
 				D380C7E42A518DFD00DA8C4B /* LoadingView.swift in Sources */,
 				D36845732A4F105A0073582A /* ContentView.swift in Sources */,
 				D380C7D92A51887900DA8C4B /* MoviePosterCard.swift in Sources */,
+				D3062FBC2A55796C0051AEC1 /* SearchBar.swift in Sources */,
 				D3C5D8292A501B5B00B34D4A /* ImageLoader.swift in Sources */,
 				D36845812A4F10CF0073582A /* Home.swift in Sources */,
 				D3C5D81A2A500C6300B34D4A /* Utils.swift in Sources */,
 				D3C5D8262A501B2E00B34D4A /* MovieBackdropCard.swift in Sources */,
+				D3062FBE2A55F58C0051AEC1 /* MovieSearchState.swift in Sources */,
 				D3C5D81C2A5018A800B34D4A /* Movie+Stub.swift in Sources */,
 				D380C7E82A51AF8200DA8C4B /* MovieDetailView.swift in Sources */,
+				D3062FBA2A55792C0051AEC1 /* MovieSearchView.swift in Sources */,
 				D380C7E22A518D5E00DA8C4B /* ActivityIndicatorView.swift in Sources */,
 				D36845712A4F105A0073582A /* iMovieApp.swift in Sources */,
 				D3C5D8182A500AD900B34D4A /* MovieStore.swift in Sources */,
