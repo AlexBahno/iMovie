@@ -19,7 +19,7 @@ struct MovieListView: View {
             List {
                 Group {
                     if nowPlayingState.movies != nil {
-                        MoviePosterCarouselView(title: "Now Playing", movies: nowPlayingState.movies!)
+                        MovieThumbnailCarouselView(title: "Now Playing", movies: nowPlayingState.movies!, thumbnailType: .poster())
                     } else {
                         LoadingView(isLoading: nowPlayingState.isLoading, error: nowPlayingState.error) {
                             self.nowPlayingState.loadMovies(with: .nowPlaying)
@@ -32,7 +32,7 @@ struct MovieListView: View {
                 
                 Group {
                     if upcomingState.movies != nil {
-                        MovieBackdropCarouselView(title: "Upcoming", movies: upcomingState.movies!)
+                        MovieThumbnailCarouselView(title: "Upcoming", movies: upcomingState.movies!, thumbnailType: .backdrop)
                     } else {
                         LoadingView(isLoading: upcomingState.isLoading, error: upcomingState.error) {
                             self.upcomingState.loadMovies(with: .upcoming)
@@ -44,7 +44,7 @@ struct MovieListView: View {
                 
                 Group {
                     if topRatedState.movies != nil {
-                        MovieBackdropCarouselView(title: "Top Rated", movies: topRatedState.movies!)
+                        MovieThumbnailCarouselView(title: "Top Rated", movies: topRatedState.movies!, thumbnailType: .backdrop)
                     } else {
                         LoadingView(isLoading: topRatedState.isLoading, error: topRatedState.error) {
                             self.topRatedState.loadMovies(with: .topRated)
@@ -56,7 +56,7 @@ struct MovieListView: View {
                 
                 Group {
                     if popularState.movies != nil {
-                        MovieBackdropCarouselView(title: "Popular", movies: popularState.movies!)
+                        MovieThumbnailCarouselView(title: "Popular", movies: popularState.movies!, thumbnailType: .backdrop)
                     } else {
                         LoadingView(isLoading: popularState.isLoading, error: popularState.error) {
                             self.popularState.loadMovies(with: .popular)
@@ -66,6 +66,7 @@ struct MovieListView: View {
                 .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
                 .listRowSeparator(.hidden)
             }
+            .listStyle(.plain)
             .navigationTitle("iMovie")
         }
         .onAppear {
