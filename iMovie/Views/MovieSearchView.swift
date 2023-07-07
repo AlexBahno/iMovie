@@ -20,7 +20,9 @@ struct MovieSearchView: View {
                     .listRowInsets(EdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 8))
                 
                 LoadingView(isLoading: self.movieSearchState.isLoading, error: self.movieSearchState.error) {
-                    self.movieSearchState.search(query: self.movieSearchState.query)
+                    Task {
+                        await self.movieSearchState.search(query: self.movieSearchState.query)
+                    }
                 }
                 
                 if self.movieSearchState.movies != nil {

@@ -18,41 +18,39 @@ class MovieStore: MovieService {
     private let jsonDecoder = Utils.jsonDecoder
     
     
-    func fetchMovies(from endpoint: MovieListEndpoint, completion: @escaping (Result<MovieResponse, MovieError>) -> ()) {
+    func fetchMovies(from endpoint: MovieListEndpoint) async throws -> [Movie] {
         guard let url = URL(string: "\(baseAPIURL)/movie/\(endpoint.rawValue)") else {
-            completion(.failure(.invalidEndpoint))
-            return
+            throw MovieError.invalidEndpoint
         }
-        self.loadURLAndDecode(url: url, completion: completion)
+        let movieResponse: MovieResponse = try await self.loadURLAndDecode(url: url)
+        return movieResponse.results
     }
     
-    func fecthMovie(id: Int, completion: @escaping (Result<Movie, MovieError>) -> ()) {
+    func fecthMovie(id: Int) async throws -> Movie {
         guard let url = URL(string: "\(baseAPIURL)/movie/\(id)") else {
-            completion(.failure(.invalidEndpoint))
-            return
+            throw MovieError.invalidEndpoint
         }
-        self.loadURLAndDecode(url: url, params: [
+        return try await self.loadURLAndDecode(url: url, params: [
             "append_to_response": "videos,credits"
-        ], completion: completion)
+        ])
     }
     
-    func searchMovie(query: String, completion: @escaping (Result<MovieResponse, MovieError>) -> ()) {
+    func searchMovie(query: String) async throws -> [Movie] {
         guard let url = URL(string: "\(baseAPIURL)/search/movie") else {
-            completion(.failure(.invalidEndpoint))
-            return
+            throw MovieError.invalidEndpoint
         }
-        self.loadURLAndDecode(url: url, params: [
+        let movieResponse: MovieResponse = try await self.loadURLAndDecode(url: url, params: [
             "language": "en-US",
             "include_adult": "false",
             "region": "US",
             "query": query
-        ], completion: completion)
+        ])
+        return movieResponse.results
     }
     
-    private func loadURLAndDecode<D: Decodable>(url: URL, params: [String: String]? = nil, completion: @escaping (Result<D, MovieError>) -> ()) {
+    private func loadURLAndDecode<D: Decodable>(url: URL, params: [String: String]? = nil) async throws -> D {
         guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-            completion(.failure(.invalidEndpoint))
-            return
+            throw MovieError.invalidEndpoint
         }
         var queryItems = [URLQueryItem(name: "api_key", value: apiKey)]
         if let params = params {
@@ -62,41 +60,16 @@ class MovieStore: MovieService {
         urlComponents.queryItems = queryItems
         
         guard let finalURL = urlComponents.url else {
-            completion(.failure(.invalidEndpoint))
-            return
+            throw MovieError.invalidEndpoint
         }
         
-        urlSession.dataTask(with: finalURL) { [weak self] data, response, error in
-            guard let self = self else {
-                return
-            }
-            if let error = error {
-                self.excuteCompletionHandlerInMainThread(with: .failure(.apiError), completion: completion)
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, 200..<300 ~= httpResponse.statusCode else {
-                self.excuteCompletionHandlerInMainThread(with: .failure(.invalidResponse), completion: completion)
-                return
-            }
-            
-            guard let data = data else {
-                self.excuteCompletionHandlerInMainThread(with: .failure(.noData), completion: completion)
-                return
-            }
-            
-            do {
-                let decodedResponse = try self.jsonDecoder.decode(D.self, from: data)
-                self.excuteCompletionHandlerInMainThread(with: .success(decodedResponse), completion: completion)
-            } catch {
-                self.excuteCompletionHandlerInMainThread(with: .failure(.serializationError), completion: completion)
-            }
-        }.resume()
-    }
-    
-    private func excuteCompletionHandlerInMainThread<D: Decodable>(with result: Result<D, MovieError>, completion: @escaping (Result<D, MovieError>) -> ()) {
-        DispatchQueue.main.async {
-            completion(result)
+        let (data, response) = try await urlSession.data(from: finalURL)
+        
+        guard let httpResponse = response as? HTTPURLResponse, 200..<300 ~= httpResponse.statusCode else {
+            throw MovieError.invalidResponse
         }
+        
+        return try self.jsonDecoder.decode(D.self, from: data)
+
     }
 }
