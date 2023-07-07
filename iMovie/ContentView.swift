@@ -10,22 +10,12 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         TabView {
-            MovieListView()
-                .tabItem {
-                    VStack {
-                        Image(systemName: "tv")
-                        Text("Movies")
-                    }
-                }
+            NavigationView { MovieHomeView() }
+                .tabItem { Label("Home", systemImage: "film") }
                 .tag(0)
             
-            MovieSearchView()
-                .tabItem {
-                    VStack {
-                        Image(systemName: "magnifyingglass")
-                        Text("Search")
-                    }
-                }
+            NavigationView { MovieSearchView() }
+                .tabItem { Label("Search", systemImage: "magnifyingglass") }
                 .tag(1)
         }
     }
