@@ -9,33 +9,70 @@ import SwiftUI
 
 struct MovieSearchView: View {
     
-    @ObservedObject var movieSearchState = MovieSearchState()
-    @ObservedObject var imageLoader = ImageLoader()
+    @StateObject var movieSearchState = MovieSearchState()
+    @StateObject var imageLoader = ImageLoader()
 
     
     var body: some View {
         List {
-            SearchBarView(placeHolder: "Search movies", text: self.$movieSearchState.query)
-                .listRowInsets(EdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 8))
-            
-            LoadingView(isLoading: self.movieSearchState.isLoading, error: self.movieSearchState.error) {
-                Task {
-                    await self.movieSearchState.search(query: self.movieSearchState.query)
-                }
-            }
-            
-            if self.movieSearchState.movies != nil {
-                ForEach(self.movieSearchState.movies!) { movie in
-                    NavigationLink(destination: MovieDetailView(movieId: movie.id, movieTitle: movie.title)) {
-                        MovieSearchCard(movie: movie)
-                    }
+            ForEach(movieSearchState.movies) { movie in
+                NavigationLink(destination: MovieDetailView(movieId: movie.id, movieTitle: movie.title)) {
+                    MovieRowView(movie: movie).padding(.vertical, 8)
                 }
             }
         }
-        .onAppear {
-            self.movieSearchState.startObserve()
-        }
+        .searchable(text: $movieSearchState.query, prompt: "Search movies")
+        .overlay(overlayView)
+        .listStyle(.plain)
+        .onAppear { movieSearchState.startObserve() }
         .navigationTitle("Search")
+    }
+    
+    @ViewBuilder
+    private var overlayView: some View {
+        switch movieSearchState.phase {
+            
+        case .empty:
+            if movieSearchState.trimmedQuery.isEmpty {
+                EmptyPlaceholderView(text: "Search your favourite movie", image: Image(systemName: "magnifyingglass"))
+            } else {
+                ProgressView()
+            }
+            
+        case .success(let values) where values.isEmpty:
+            EmptyPlaceholderView(text: "No results", image: Image(systemName: "film"))
+        case .failure(let error):
+            RetryView(text: error.localizedDescription) {
+                Task {
+                    await movieSearchState.search(query:movieSearchState.query)
+                }
+            }
+        default:
+            EmptyView()
+        }
+    }
+}
+
+struct MovieRowView: View {
+    
+    let movie: Movie
+    
+    var body: some View {
+        HStack(alignment: .top, spacing: 16) {
+            MovieThumbnailView(movie: movie, thumbnailType: .poster(showTitle: false))
+                .frame(width: 61, height: 92)
+            
+            VStack(alignment: .leading) {
+                Text(movie.title)
+                    .font(.headline)
+                
+                Text(movie.yearText)
+                    .font(.headline)
+                
+                Text(movie.ratingText)
+                    .foregroundColor(.yellow)
+            }
+        }
     }
 }
 
