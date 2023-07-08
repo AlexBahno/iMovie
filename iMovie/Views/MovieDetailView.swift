@@ -13,6 +13,11 @@ struct MovieDetailView: View {
     let movieTitle: String
     @StateObject private var movieDetailState = MovieDetailState()
     @State private var selectedTrailerURL: URL?
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.id)]) var savedMovies: FetchedResults<SavedMovie>
+    
+    var isSaved: Bool {
+        return !savedMovies.filter({ $0.id == movieId }).isEmpty
+    }
     
     var body: some View {
         List {
@@ -21,10 +26,8 @@ struct MovieDetailView: View {
                     .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                     .listRowSeparator(.hidden)
                 
-                MovieDetailListView(movie: movie, selectedTrailerURL: $selectedTrailerURL)
+                MovieDetailListView(movie: movie, selectedTrailerURL: $selectedTrailerURL, isSaved: isSaved)
             }
-            
-            
         }
         .listStyle(.plain)
         .task {
@@ -48,8 +51,12 @@ struct MovieDetailView: View {
 
 struct MovieDetailListView: View {
     
-    let movie: Movie
+    var movie: Movie
     @Binding var selectedTrailerURL: URL?
+    @State var isSaved: Bool
+    @Environment (\.managedObjectContext) var managedObjContext
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.id)]) var savedMovies: FetchedResults<SavedMovie>
+    
     
     var body: some View {
         movieDescriptionSection.listRowSeparator(.visible)
@@ -68,10 +75,32 @@ struct MovieDetailListView: View {
                 if !movie.ratingText.isEmpty {
                     Text(movie.ratingText).foregroundColor(.yellow)
                 }
-                Text(movie.scoreText)
+                HStack {
+                    Text(movie.scoreText)
+                    Spacer()
+                    Button {
+                        saveMovie()
+                    } label: {
+                        Image(systemName: isSaved ? "bookmark.fill" : "bookmark")
+                            .font(.system(size: 25))
+                    }
+
+                }
             }
         }
         .padding(.vertical)
+    }
+    
+    private func saveMovie() {
+        if isSaved {
+            guard let movie = savedMovies.first(where: { $0.id == self.movie.id }) else { return }
+            managedObjContext.delete(movie)
+            DataController().save(context: managedObjContext)
+            isSaved.toggle()
+            return
+        }
+        DataController().saveMovie(movieId: movie.id, context: managedObjContext)
+        isSaved.toggle()
     }
     
     private var movieCastSection: some View {
@@ -161,7 +190,7 @@ extension URL: Identifiable {
 struct MovieDetailView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            MovieDetailView(movieId: Movie.stubbedMovie.id, movieTitle: "The GodFather")
+            MovieDetailView(movieId: Movie.stubbedMovie.id, movieTitle: "The Godfather")
         }
     }
 }

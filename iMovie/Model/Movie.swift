@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import CoreData
+import SwiftUI
 
 struct MovieResponse: Decodable {
     let results: [Movie]

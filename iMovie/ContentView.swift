@@ -17,6 +17,10 @@ struct ContentView: View {
             NavigationView { MovieSearchView() }
                 .tabItem { Label("Search", systemImage: "magnifyingglass") }
                 .tag(1)
+            
+            NavigationView { MoviesMarkedView() }
+                .tabItem { Label("Marked", systemImage: "bookmark.fill") }
+                .tag(2)
         }
     }
 }
