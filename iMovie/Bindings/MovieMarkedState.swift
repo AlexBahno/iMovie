@@ -10,14 +10,14 @@ import Foundation
 @MainActor
 class MovieMarkedState: ObservableObject {
      
-    @Published private(set) var phase: DataFetchPhase<[Movie]> = .empty
+    @Published private(set) var phase: DataFetchPhase<Set<Movie>> = .empty
     private let movieService: MovieService = MovieStore.shared
 
-    var movies: [Movie] {
+    var movies: Set<Movie> {
         phase.value ?? []
     }
     
-    func loadMovies(ids: [Int]) async {
+    func loadMovies(ids: Set<Int>) async {
         if Task.isCancelled { return }
         
         phase = .empty
@@ -33,7 +33,7 @@ class MovieMarkedState: ObservableObject {
     }
     
     
-    private func fetchMoviesById(_ ids: [Int]) async throws -> [Movie] {
+    private func fetchMoviesById(_ ids: Set<Int>) async throws -> Set<Movie> {
         let results: [Result<Movie, Error>] = await withTaskGroup(of: Result<Movie, Error>.self) { group in
             for id in ids {
                 group.addTask {
@@ -49,13 +49,13 @@ class MovieMarkedState: ObservableObject {
             return results
         }
         
-        var movies = [Movie]()
+        var movies: Set<Movie> = []
         var errors = [Error]()
         
         results.forEach { result in
             switch result {
             case .success(let movie):
-                movies.append(movie)
+                movies.insert(movie)
             case .failure(let error):
                 errors.append(error)
             }
@@ -65,7 +65,8 @@ class MovieMarkedState: ObservableObject {
             throw error
         }
         
-        return movies.sorted { $0.voteAverage > $1.voteAverage}
+        return movies
+        //.sorted { $0.voteAverage > $1.voteAverage}
     }
     
     private func fetchMovieById(id : Int) async -> Result<Movie, Error> {

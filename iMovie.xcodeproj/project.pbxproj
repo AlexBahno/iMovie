@@ -164,8 +164,8 @@
 				D3C5D81B2A5018A800B34D4A /* Movie+Stub.swift */,
 				D3F317902A58148200BD88E7 /* DataFetchPhase.swift */,
 				D37B15212A5846E200B6F922 /* MovieSection.swift */,
-				D3C2A4202A596EAD0096FFDA /* SavedMovieModel.xcdatamodeld */,
 				D3C2A4232A5972450096FFDA /* DataController.swift */,
+				D3C2A4202A596EAD0096FFDA /* SavedMovieModel.xcdatamodeld */,
 			);
 			path = Model;
 			sourceTree = "<group>";

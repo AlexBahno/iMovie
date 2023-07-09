@@ -32,6 +32,11 @@ struct DataFetchPhaseOverlayView<V:EmptyData>: View {
 }
 
 extension Array: EmptyData {}
+extension Set: EmptyData, RandomAccessCollection {
+    public func index(before i: Index) -> Index {
+        return i
+    }
+}
 extension Optional: EmptyData {
     var isEmpty: Bool {
         if case .none = self {

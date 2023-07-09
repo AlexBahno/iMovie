@@ -14,7 +14,12 @@ struct MovieResponse: Decodable {
 }
 
 
-struct Movie: Decodable, Identifiable {
+struct Movie: Decodable, Identifiable, Hashable {
+    
+    static func == (lhs: Movie, rhs: Movie) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
     let id: Int
     let title: String
     let backdropPath: String?
@@ -109,32 +114,32 @@ struct Movie: Decodable, Identifiable {
 }
 
 
-struct MovieGenre: Decodable {
+struct MovieGenre: Decodable, Hashable {
     let name: String
 }
 
-struct MovieCredit: Decodable {
+struct MovieCredit: Decodable, Hashable {
     let cast: [MovieCast]
     let crew: [MovieCrew]
 }
 
-struct MovieCast: Decodable, Identifiable {
+struct MovieCast: Decodable, Identifiable, Hashable {
     let id: Int
     let character: String
     let name: String
 }
 
-struct MovieCrew: Decodable, Identifiable {
+struct MovieCrew: Decodable, Identifiable, Hashable {
     let id: Int
     let job: String
     let name: String
 }
 
-struct MovieVideoResponse: Decodable {
+struct MovieVideoResponse: Decodable, Hashable {
     let results: [MovieVideo]
 }
 
-struct MovieVideo: Decodable, Identifiable {
+struct MovieVideo: Decodable, Identifiable, Hashable {
     let id: String
     let key: String
     let name: String
