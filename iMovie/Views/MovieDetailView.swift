@@ -62,6 +62,13 @@ struct MovieDetailListView: View {
         movieDescriptionSection.listRowSeparator(.visible)
         movieCastSection.listRowSeparator(.hidden)
         movieTrailerSection
+        reviewsSection
+        if let similar = movie.similarMovie {
+            MovieThumbnailCarouselView(title: "Similar", movies: similar)
+                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                .padding(.vertical)
+                .listRowSeparator(.hidden, edges: .bottom)
+        }
     }
     
     
@@ -159,9 +166,67 @@ struct MovieDetailListView: View {
         }
     }
     
+    @ViewBuilder
+    private var reviewsSection: some View {
+        if let reviews = movie.comments, !reviews.isEmpty {
+            Text("Reviews").font(.headline)
+                .listRowSeparator(.hidden)
+                .padding(.top)
+            ForEach(reviews.prefix(10)) { review in
+                NavigationLink {
+                    MovieReviewDetail(review: review)
+                } label: {
+                    HStack (alignment: .top) {
+                        VStack (alignment: .center) {
+                            Image(systemName: "person.crop.circle")
+                                .font(.system(size: 20))
+                            Text(review.authorDetails.username)
+                                .lineLimit(1)
+                                .font(.subheadline)
+                                .padding(.top, 8)
+                        }
+                        .frame(width: 70)
+                        Text(review.content)
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(5)
+                    }
+                }
+            }
+        }
+    }
+    
     
     private var movieGenreYearDurationText: String {
         "\(movie.genreText) · \(movie.yearText) · \(movie.durationText)"
+    }
+}
+
+struct MovieReviewDetail: View {
+    let review: MovieReview
+    
+    var body: some View {
+        HStack (alignment: .center) {
+            ScrollView {
+                VStack (alignment: .leading) {
+                    HStack (alignment: .bottom) {
+                        Image(systemName: "person.crop.circle")
+                            .font(.system(size: 32))
+                        Text(review.authorDetails.username)
+                            .font(.title2)
+                            .padding(.top, 8)
+                        
+                        Spacer()
+                        
+                        Text("Created " + review.createdAt.prefix(10))
+                            .font(.headline)
+                    }.padding(.vertical)
+                    Text(review.content)
+                        .padding(.bottom)
+                }
+            }
+        }
+        .padding(.horizontal)
+        .navigationTitle("Review")
     }
 }
 

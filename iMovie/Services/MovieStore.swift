@@ -31,7 +31,7 @@ class MovieStore: MovieService {
             throw MovieError.invalidEndpoint
         }
         return try await self.loadURLAndDecode(url: url, params: [
-            "append_to_response": "videos,credits"
+            "append_to_response": "videos,credits,reviews,recommendations"
         ])
     }
     

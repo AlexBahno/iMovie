@@ -33,6 +33,8 @@ struct Movie: Decodable, Identifiable, Hashable {
     let genres: [MovieGenre]?
     let credits: MovieCredit?
     let videos: MovieVideoResponse?
+    let reviews: MovieReviewResponse?
+    let recommendations: MovieRecommendationResponse?
     
     static private let yearFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -111,6 +113,14 @@ struct Movie: Decodable, Identifiable, Hashable {
     var youtubeTrailers: [MovieVideo]? {
         videos?.results.filter { $0.youtubeURL != nil }
     }
+    
+    var comments: [MovieReview]? {
+        reviews?.results.filter { !$0.content.isEmpty }
+    }
+    
+    var similarMovie: [Movie]? {
+        recommendations?.results
+    }
 }
 
 
@@ -150,5 +160,40 @@ struct MovieVideo: Decodable, Identifiable, Hashable {
             return nil
         }
         return URL(string: "https://youtube.com/watch?v=\(key)")
+    }
+}
+
+struct MovieReviewResponse: Decodable, Hashable {
+    let results: [MovieReview]
+}
+
+struct MovieReview: Identifiable, Decodable, Hashable {
+    let id: String
+    let content: String
+    let createdAt: String
+    let updatedAt: String?
+    let authorDetails: AuthorDetails
+}
+
+struct AuthorDetails: Decodable, Hashable {
+    let username: String
+}
+
+struct MovieRecommendationResponse: Decodable, Hashable {
+    let results: [Movie]
+}
+
+struct MovieRecommendation: Identifiable, Decodable, Hashable {
+    let id: Int
+    let title: String
+    let backdropPath: String?
+    let posterPath: String?
+    
+    var backdropURL: URL {
+        return URL(string: "https://image.tmdb.org/t/p/w500\(backdropPath ?? "")")!
+    }
+    
+    var posterURL: URL {
+        return URL(string: "https://image.tmdb.org/t/p/w500\(posterPath ?? "")")!
     }
 }
