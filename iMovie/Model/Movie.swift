@@ -177,23 +177,20 @@ struct MovieReview: Identifiable, Decodable, Hashable {
 
 struct AuthorDetails: Decodable, Hashable {
     let username: String
+    let avatarPath: String?
+    
+    var avatarURL: URL {
+        if let avatarPath = avatarPath {
+            if avatarPath.contains("gravatar") {
+                return URL(string: avatarPath)!
+            }
+            return URL(string: "https://image.tmdb.org/t/p/w500\(avatarPath)")!
+        }
+        return URL(string: "https://image.tmdb.org/t/p/w500")!
+    }
 }
 
 struct MovieRecommendationResponse: Decodable, Hashable {
     let results: [Movie]
 }
 
-struct MovieRecommendation: Identifiable, Decodable, Hashable {
-    let id: Int
-    let title: String
-    let backdropPath: String?
-    let posterPath: String?
-    
-    var backdropURL: URL {
-        return URL(string: "https://image.tmdb.org/t/p/w500\(backdropPath ?? "")")!
-    }
-    
-    var posterURL: URL {
-        return URL(string: "https://image.tmdb.org/t/p/w500\(posterPath ?? "")")!
-    }
-}

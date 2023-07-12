@@ -173,24 +173,7 @@ struct MovieDetailListView: View {
                 .listRowSeparator(.hidden)
                 .padding(.top)
             ForEach(reviews.prefix(10)) { review in
-                NavigationLink {
-                    MovieReviewDetail(review: review)
-                } label: {
-                    HStack (alignment: .top) {
-                        VStack (alignment: .center) {
-                            Image(systemName: "person.crop.circle")
-                                .font(.system(size: 20))
-                            Text(review.authorDetails.username)
-                                .lineLimit(1)
-                                .font(.subheadline)
-                                .padding(.top, 8)
-                        }
-                        .frame(width: 70)
-                        Text(review.content)
-                            .multilineTextAlignment(.leading)
-                            .lineLimit(5)
-                    }
-                }
+                MovieReviewRow(review: review)
             }
         }
     }
@@ -201,7 +184,45 @@ struct MovieDetailListView: View {
     }
 }
 
+struct MovieReviewRow: View {
+    let review: MovieReview
+    @StateObject private var imageLoader = ImageLoader()
+    
+    var body: some View {
+        NavigationLink {
+            MovieReviewDetail(review: review)
+        } label: {
+            HStack (alignment: .top) {
+                VStack (alignment: .center) {
+                    ZStack {
+                        Image(systemName: "person.crop.circle")
+                            .font(.system(size: 32))
+                        if let image = imageLoader.image {
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFit()
+                        }
+                    }
+                    .frame(width: 50, height: 50)
+                    .cornerRadius(8)
+                    .onAppear { imageLoader.loadImage(with: review.authorDetails.avatarURL) }
+                    
+                    Text(review.authorDetails.username)
+                        .lineLimit(1)
+                        .font(.subheadline)
+                        .padding(.top, 8)
+                }
+                .frame(width: 70)
+                Text(review.content)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(5)
+            }
+        }
+    }
+}
+
 struct MovieReviewDetail: View {
+    @StateObject private var imageLoader = ImageLoader()
     let review: MovieReview
     
     var body: some View {
@@ -209,8 +230,20 @@ struct MovieReviewDetail: View {
             ScrollView {
                 VStack (alignment: .leading) {
                     HStack (alignment: .bottom) {
-                        Image(systemName: "person.crop.circle")
-                            .font(.system(size: 32))
+                        ZStack {
+                            Image(systemName: "person.crop.circle")
+                                .font(.system(size: 42))
+                            if let image = imageLoader.image {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .frame(width: 70, height: 70)
+                                    .scaledToFit()
+                            }
+                        }
+                        .onAppear {
+                            imageLoader.loadImage(with: review.authorDetails.avatarURL)
+                        }
+                        
                         Text(review.authorDetails.username)
                             .font(.title2)
                             .padding(.top, 8)
