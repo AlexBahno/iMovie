@@ -34,7 +34,7 @@ struct Movie: Decodable, Identifiable, Hashable {
     let credits: MovieCredit?
     let videos: MovieVideoResponse?
     let reviews: MovieReviewResponse?
-    let recommendations: MovieRecommendationResponse?
+    let similar: MovieRecommendationResponse?
     
     static private let yearFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -119,7 +119,7 @@ struct Movie: Decodable, Identifiable, Hashable {
     }
     
     var similarMovie: [Movie]? {
-        recommendations?.results
+        similar?.results
     }
 }
 
